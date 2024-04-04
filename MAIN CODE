@@ -22,8 +22,9 @@ void draw() {
 
 void drawTrack() {
   stroke(0, 0, 255);
-  strokeWeight(2);
-  line(0, height/2, width, height/2);
+  strokeWeight(4);
+  line(0, 20, width, 20); // Top blue bar
+  line(0, height - 20, width, height - 20); // Bottom blue bar
 }
 
 void movePacMan() {
@@ -43,15 +44,8 @@ void movePacMan() {
 }
 
 void drawPacMan() {
-  pushMatrix(); // Save the current transformation state
-  
-  // Flip PacMan sprite if facing left
-  if (facingDirection == -1) {
-    scale(-1, 1);
-  }
-  
   fill(255, 255, 0);
-  arc(pacX * facingDirection, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
+  arc(pacX, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
   
   // Update mouth angle for animation
   if (millis() - lastMouthChange > 1000) {
@@ -63,11 +57,16 @@ void drawPacMan() {
     lastMouthChange = millis();
   }
   
-  popMatrix(); // Restore the previous transformation state
+  // Draw PacMan outline separately with different color and stroke weight
+  noFill();
+  stroke(0);
+  strokeWeight(2);
+  arc(pacX, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
 }
 
 void keyPressed() {
   if (key == ' ') {
     movingRight = !movingRight; // Swap direction
+    facingDirection *= -1; // Flip PacMan sprite
   }
 }
