@@ -3,6 +3,8 @@ int pacSize = 40; // PacMan size
 int pacSpeed = 2; // PacMan speed
 boolean movingRight = true; // Initial movement direction
 int mouthAngle = 45; // Initial mouth angle
+long lastMouthChange = 0; // Time tracker for mouth animation
+int facingDirection = 1; // 1 for facing right, -1 for facing left
 
 void setup() {
   size(800, 200);
@@ -20,7 +22,7 @@ void draw() {
 
 void drawTrack() {
   stroke(0, 0, 255);
-  strokeWeight(10);
+  strokeWeight(2);
   line(0, height/2, width, height/2);
 }
 
@@ -30,24 +32,38 @@ void movePacMan() {
     if (pacX >= width) {
       pacX = 0;
     }
+    facingDirection = 1;
   } else {
     pacX -= pacSpeed;
     if (pacX <= 0 - pacSize) {
       pacX = width - pacSize;
     }
+    facingDirection = -1;
   }
 }
 
 void drawPacMan() {
+  pushMatrix(); // Save the current transformation state
+  
+  // Flip PacMan sprite if facing left
+  if (facingDirection == -1) {
+    scale(-1, 1);
+  }
+  
   fill(255, 255, 0);
-  arc(pacX, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
+  arc(pacX * facingDirection, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
   
   // Update mouth angle for animation
-  if (mouthAngle == 45) {
-    mouthAngle = 0;
-  } else {
-    mouthAngle = 45;
+  if (millis() - lastMouthChange > 1000) {
+    if (mouthAngle == 45) {
+      mouthAngle = 0;
+    } else {
+      mouthAngle = 45;
+    }
+    lastMouthChange = millis();
   }
+  
+  popMatrix(); // Restore the previous transformation state
 }
 
 void keyPressed() {
