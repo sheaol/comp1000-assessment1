@@ -1,0 +1,57 @@
+int pacX, pacY; // PacMan position
+int pacSize = 40; // PacMan size
+int pacSpeed = 2; // PacMan speed
+boolean movingRight = true; // Initial movement direction
+int mouthAngle = 45; // Initial mouth angle
+
+void setup() {
+  size(800, 200);
+  background(0);
+  pacX = width / 2;
+  pacY = height / 2;
+}
+
+void draw() {
+  background(0);
+  drawTrack();
+  movePacMan();
+  drawPacMan();
+}
+
+void drawTrack() {
+  stroke(0, 0, 255);
+  strokeWeight(10);
+  line(0, height/2, width, height/2);
+}
+
+void movePacMan() {
+  if (movingRight) {
+    pacX += pacSpeed;
+    if (pacX >= width) {
+      pacX = 0;
+    }
+  } else {
+    pacX -= pacSpeed;
+    if (pacX <= 0 - pacSize) {
+      pacX = width - pacSize;
+    }
+  }
+}
+
+void drawPacMan() {
+  fill(255, 255, 0);
+  arc(pacX, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
+  
+  // Update mouth angle for animation
+  if (mouthAngle == 45) {
+    mouthAngle = 0;
+  } else {
+    mouthAngle = 45;
+  }
+}
+
+void keyPressed() {
+  if (key == ' ') {
+    movingRight = !movingRight; // Swap direction
+  }
+}
