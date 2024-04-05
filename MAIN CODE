@@ -1,73 +1,69 @@
-int pacX, pacY; // PacMan position
-int pacSize = 40; // PacMan size
-int pacSpeed = 2; // PacMan speed
+int pmX, pmY; // PacMan position
+int pacmanSize = 40; // PacMan size
+int pacmanSpeed = 2; // PacMan speed
 boolean movingRight = true; // Initial movement direction
 int mouthAngle = 45; // Initial mouth angle
-int lastMouthChangeFrame = 0; // Frame count tracker for mouth animation
-int frameInterval = 30; // Frame interval for mouth animation
-int facingDirection = 1; // 1 for facing right, -1 for facing left
+int prevMouthFrame = 0; // Frame tracker for mouth animation
 
 void setup() {
   size(800, 200);
   background(0);
-  pacX = width / 2;
-  pacY = height / 2;
+  pmX = width / 2;
+  pmY = height / 2;
 }
 
 void draw() {
   background(0);
-  drawTrack();
+  drawBars();
   movePacMan();
   drawPacMan();
 }
 
-void drawTrack() {
+void drawBars() {
   stroke(0, 0, 255);
-  strokeWeight(4);
+  strokeWeight(10); //10px in width
   line(0, 20, width, 20); // Top blue bar
   line(0, height - 20, width, height - 20); // Bottom blue bar
 }
 
 void movePacMan() {
   if (movingRight) {
-    pacX += pacSpeed;
-    if (pacX >= width) {
-      pacX = 0;
+    pmX += pacmanSpeed;
+    if (pmX >= width) {
+      pmX = 0;
     }
-    facingDirection = 1;
   } else {
-    pacX -= pacSpeed;
-    if (pacX <= 0 - pacSize) {
-      pacX = width - pacSize;
+    pmX -= pacmanSpeed;
+    if (pmX <= 0 - pacmanSize) {
+      pmX = width - pacmanSize;
     }
-    facingDirection = -1;
   }
 }
 
 void drawPacMan() {
+  noStroke(); // removes the stroke that the drawBar function would give it 
   fill(255, 255, 0);
-  arc(pacX, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
+  if (movingRight) {
+    arc(pmX, pmY, pacmanSize, pacmanSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
+  } else {
+    arc(pmX, pmY, pacmanSize, pacmanSize, radians(180 + mouthAngle), radians(180 - mouthAngle), PIE);
+  }
   
-  // Update mouth angle for animation based on frame count
-  if (frameCount - lastMouthChangeFrame > frameInterval) {
+  // Update mouth angle for animation
+  if (frameCount - prevMouthFrame > 60) { // Change mouth every 60 frames (1 second at 60 fps)
     if (mouthAngle == 45) {
       mouthAngle = 0;
     } else {
       mouthAngle = 45;
     }
-    lastMouthChangeFrame = frameCount;
+    prevMouthFrame = frameCount;
   }
-  
-  // Draw PacMan outline separately with different color and stroke weight
-  noFill();
-  stroke(0);
-  strokeWeight(2);
-  arc(pacX, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
 }
 
 void keyPressed() {
   if (key == ' ') {
     movingRight = !movingRight; // Swap direction
-    facingDirection *= -1; // Flip PacMan sprite
   }
 }
+
+//not sure how to flip the arc movement without it disappearing off the screen
