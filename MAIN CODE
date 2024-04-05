@@ -3,7 +3,8 @@ int pacSize = 40; // PacMan size
 int pacSpeed = 2; // PacMan speed
 boolean movingRight = true; // Initial movement direction
 int mouthAngle = 45; // Initial mouth angle
-long lastMouthChange = 0; // Time tracker for mouth animation
+int lastMouthChangeFrame = 0; // Frame count tracker for mouth animation
+int frameInterval = 30; // Frame interval for mouth animation
 int facingDirection = 1; // 1 for facing right, -1 for facing left
 
 void setup() {
@@ -47,14 +48,14 @@ void drawPacMan() {
   fill(255, 255, 0);
   arc(pacX, pacY, pacSize, pacSize, radians(mouthAngle), radians(360 - mouthAngle), PIE);
   
-  // Update mouth angle for animation
-  if (millis() - lastMouthChange > 1000) {
+  // Update mouth angle for animation based on frame count
+  if (frameCount - lastMouthChangeFrame > frameInterval) {
     if (mouthAngle == 45) {
       mouthAngle = 0;
     } else {
       mouthAngle = 45;
     }
-    lastMouthChange = millis();
+    lastMouthChangeFrame = frameCount;
   }
   
   // Draw PacMan outline separately with different color and stroke weight
